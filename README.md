@@ -1,5 +1,7 @@
 # Anti-Hallucination Skill
 
+[English](./README.en.md) | 简体中文
+
 一个用于减少 AI Agent 幻觉的通用指令型 Skill,通过「提问补全背景 + 锚点句自检」双防线机制,让幻觉发生时信号可见。
 
 ## 这个 Skill 解决什么问题
