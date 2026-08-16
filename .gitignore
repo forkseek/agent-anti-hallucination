@@ -1,0 +1,19 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# GitHub CLI (含 token,禁止提交)
+.gh-config/
+gh-config/
+
+# 临时文件
+*.log
+*.tmp
