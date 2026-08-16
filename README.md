@@ -44,18 +44,42 @@ AI Agent 的幻觉主要来自两个源头:
 
 | 文件 | 说明 |
 |---|---|
-| `SKILL.md` | Skill 主体定义,包含元信息、设计理念、分级标准、提问策略、锚点规范、自检清单、异常协议、示例库 |
-| `README.md` | 本文件 |
+| `SKILL.md` | 中文版 Skill 主体定义(通用参考规范) |
+| `SKILL.en.md` | 英文版 Skill 主体定义 |
+| `platforms/trae/` | Trae 平台适配版(符合 Trae frontmatter 规范) |
+| `platforms/claude/` | Claude 平台适配版(符合 Agent Skills 开放标准) |
+| `platforms/generic/` | 通用 system prompt 版(任意 agent 可用) |
 | `LICENSE` | MIT 协议 |
 
-## 使用方式
+## 安装与使用
 
-本 Skill 为**通用参考规范**,纯指令型,不含可执行代码。落地到具体 Agent 平台时,将 `SKILL.md` 放入对应平台的 skills 目录即可。
+本 Skill 已适配三个平台,选择你使用的平台按说明安装:
 
-示例(Trae 平台):
+### Trae
+
+```bash
+# 复制到 Trae skills 目录
+cp -r platforms/trae/anti-hallucination ~/.trae-cn/skills/
 ```
-~/.trae-cn/skills/anti-hallucination/SKILL.md
+
+验证:在 Trae 中输入任务,观察回复是否以 `[CTX-LOCK]` 开头、`[CTX-VERIFIED]` 结尾。
+
+### Claude(Claude Code / Claude.ai)
+
+```bash
+# Claude Code:复制到 .claude/skills 目录
+cp -r platforms/claude/anti-hallucination ~/.claude/skills/
 ```
+
+Claude.ai 用户:将 `platforms/claude/anti-hallucination/SKILL.md` 的内容粘贴到 Project 的自定义指令中。
+
+验证:输入"你有哪些 skill",应能看到 `anti-hallucination`;输入任务后观察锚点标记。
+
+### 通用 system prompt(ChatGPT / Gemini / 本地 LLM 等)
+
+将 `platforms/generic/system-prompt.md` 的全部内容粘贴到 agent 的 system prompt / 自定义指令 / 首条消息中。
+
+验证:发送任意任务,观察回复是否带 `[CTX-LOCK]` / `[CTX-VERIFIED]` 双锚点。
 
 ## 技术栈
 
@@ -64,6 +88,12 @@ AI Agent 的幻觉主要来自两个源头:
 - **依赖**:无
 
 本 Skill 是一份 Prompt/指令定义,不含任何编程语言代码。GitHub Linguist 会将仓库识别为 Markdown。
+
+## 已知局限
+
+- **模型兼容性差异**:不同模型对"强制开头/结尾输出固定标记"的遵守度不同,锚点机制在小模型或经过 RLHF 重度对齐的模型上可能被忽略
+- **未做大规模效果验证**:本 Skill 的防幻觉效果未经大规模量化测试,建议在自己的使用场景中验证后再依赖
+- **自检非绝对可靠**:agent 自检本身也可能一起幻觉,人工复核(看锚点是否缺失)是最终兜底
 
 ## 协议
 

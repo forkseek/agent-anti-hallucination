@@ -44,20 +44,42 @@ Every reply must be wrapped in fixed markers, making "context loss" visible at a
 
 | File | Description |
 |---|---|
-| `SKILL.md` | Skill main definition (Chinese) — metadata, design rationale, triage criteria, questioning protocol, anchor spec, self-check list, anomaly protocol, examples |
+| `SKILL.md` | Skill main definition, Chinese (general reference spec) |
 | `SKILL.en.md` | English version of the Skill definition |
-| `README.md` | This file (Chinese) |
-| `README.en.md` | This file |
+| `platforms/trae/` | Trae platform build (Trae frontmatter spec) |
+| `platforms/claude/` | Claude platform build (Agent Skills open standard) |
+| `platforms/generic/` | Generic system-prompt build (any agent) |
 | `LICENSE` | MIT license |
 
-## Usage
+## Installation
 
-This Skill is a **general-purpose reference spec**, instruction-only, with no executable code. To deploy it on a specific agent platform, place `SKILL.md` (or `SKILL.en.md` for English) in that platform's skills directory.
+This Skill has been adapted for three platforms. Pick yours and follow the instructions.
 
-Example (Trae):
+### Trae
+
+```bash
+# Copy into the Trae skills directory
+cp -r platforms/trae/anti-hallucination ~/.trae-cn/skills/
 ```
-~/.trae-cn/skills/anti-hallucination/SKILL.md
+
+Verify: send a task in Trae and check that replies start with `[CTX-LOCK]` and end with `[CTX-VERIFIED]`.
+
+### Claude (Claude Code / Claude.ai)
+
+```bash
+# Claude Code: copy into .claude/skills
+cp -r platforms/claude/anti-hallucination ~/.claude/skills/
 ```
+
+Claude.ai users: paste the content of `platforms/claude/anti-hallucination/SKILL.md` into a Project's custom instructions.
+
+Verify: type "what skills do you have" — `anti-hallucination` should appear; after a task, check for anchor markers.
+
+### Generic system prompt (ChatGPT / Gemini / local LLMs, etc.)
+
+Paste the full content of `platforms/generic/system-prompt.md` into your agent's system prompt / custom instructions / first message.
+
+Verify: send any task and check that replies carry both `[CTX-LOCK]` and `[CTX-VERIFIED]`.
 
 ## Tech stack
 
@@ -66,6 +88,12 @@ Example (Trae):
 - **Dependencies**: none
 
 This Skill is a prompt/instruction definition with no programming-language code. GitHub Linguist will classify the repo as Markdown.
+
+## Known limitations
+
+- **Model compatibility varies**: different models obey "force a fixed marker at the start/end" to different degrees; the anchor mechanism may be ignored by small models or heavily RLHF-aligned models
+- **No large-scale effect validation**: the anti-hallucination effect has not been quantitatively tested at scale; validate it in your own use case before relying on it
+- **Self-check is not absolutely reliable**: agent self-checking can hallucinate too; human review (watching for missing anchors) is the final backstop
 
 ## License
 
